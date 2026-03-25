@@ -1,5 +1,6 @@
 import { spawn } from "child_process";
 import { join } from "path";
+import * as os from "node:os";
 
 function play(sound: string) {
   spawn("powershell.exe", [
@@ -10,7 +11,7 @@ function play(sound: string) {
 }
 
 function makeAudioPath(baseDir: string, relativePath: string) {
-  return join(baseDir, "audio", relativePath);
+  return join(baseDir, relativePath);
 }
 
 function ready(baseDir: string) {
@@ -29,8 +30,17 @@ function what(baseDir: string) {
   play(makeAudioPath(baseDir, join("peon", "sounds", "PeonWhat3.wav")));
 }
 
-export const PingPlugin = async ({ directory }) => {
-  const baseDir = directory ?? process.cwd();
+export const PingPlugin = async () => {
+
+  const baseDir = join(
+    os.homedir(),
+    "AppData",
+    "Local",
+    "OpenCode",
+    "power-peon-ping",
+    "audio"
+  );
+
   return {
     event: async ({ event }: { event: any }) => {
       if (event.type === "message.updated") {
@@ -51,23 +61,20 @@ export const PingPlugin = async ({ directory }) => {
           what(baseDir);
         }
       }
+
       if (event.type === "permission.asked") {
         what(baseDir);
-      }
-      if (event.type === "server.connected") {
-        ready(baseDir);
       }
       if (event.type === "permission.granted") {
         workWork(baseDir);
       }
-
       if (event.type === "session.error") {
         what(baseDir);
       }
-
       if (event.type === "session.idle") {
         jobsDone(baseDir);
       }
+
       // AI performing steps / tools
       // if (event.type === "message.part.updated") {
       //   const part = event.properties?.part;
