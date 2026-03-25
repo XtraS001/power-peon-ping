@@ -45,7 +45,7 @@ Example:
 
 | File/Folder   | Destination                                                                 |
 | ------------- | --------------------------------------------------------------------------- |
-| Plugin file   | `C:\Users\<you>\.config\opencode\plugins\power-peon-ping\power-peon-ping.ts` |
+| Plugin file   | `C:\Users\<you>\.config\opencode\plugins\power-peon-ping.ts` |
 | Audio folder  | `C:\Users\<you>\AppData\Local\OpenCode\power-peon-ping\audio\`               |
 
 The installer creates these directories automatically.
@@ -73,10 +73,10 @@ iwr -useb "https://raw.githubusercontent.com/XtraS001/power-peon-ping/main/unins
 
 ### Manual method
 
-If you prefer to manually remove files, delete the plugin folder and audio folder:
+If you prefer to manually remove files, delete the plugin file and audio folder:
 
 ```powershell
-Remove-Item -Recurse -Force "$env:USERPROFILE\.config\opencode\plugins\power-peon-ping"
+Remove-Item -Force "$env:USERPROFILE\.config\opencode\plugins\power-peon-ping.ts"
 Remove-Item -Recurse -Force "$env:LOCALAPPDATA\OpenCode\power-peon-ping\audio"
 ```
 
