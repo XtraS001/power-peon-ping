@@ -6,7 +6,8 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
 $PluginName = "power-peon-ping"
-$PluginDir = Join-Path $env:USERPROFILE ".config\opencode\plugins\$PluginName"
+$PluginsDir = Join-Path $env:USERPROFILE ".config\opencode\plugins"
+$PluginFile = Join-Path $PluginsDir "$PluginName.ts"
 $AudioDir = Join-Path $env:LOCALAPPDATA "OpenCode\$PluginName\audio"
 $AudioParentDir = Join-Path $env:LOCALAPPDATA "OpenCode\$PluginName"
 
@@ -55,7 +56,7 @@ function Remove-DirIfEmpty {
 }
 
 try {
-  Remove-PathSafe -Path $PluginDir -Label "Plugin directory"
+  Remove-PathSafe -Path $PluginFile -Label "Plugin file"
   Remove-PathSafe -Path $AudioDir -Label "Audio directory"
   Remove-DirIfEmpty -Path $AudioParentDir -Label "Audio parent directory"
 

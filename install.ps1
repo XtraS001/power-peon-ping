@@ -20,23 +20,23 @@ $ErrorActionPreference = "Stop"
 $ZipUrl = "https://github.com/$Repo/archive/refs/heads/$Branch.zip"
 
 $PluginName = "power-peon-ping"
-$PluginDir = Join-Path $env:USERPROFILE ".config\opencode\plugins\$PluginName"
-$PluginFile = Join-Path $PluginDir "power-peon-ping.ts"
+$PluginsDir = Join-Path $env:USERPROFILE ".config\opencode\plugins"
+$PluginFile = Join-Path $PluginsDir "$PluginName.ts"
 $AudioDir = Join-Path $env:LOCALAPPDATA "OpenCode\$PluginName\audio"
 
 Write-Host "=== power-peon-ping Installer ===" -ForegroundColor Cyan
 Write-Host ""
 
-if (Test-Path $PluginDir) {
+if (Test-Path $PluginFile) {
   if (-not $Force) {
-    $ans = Read-Host "Plugin directory exists at $PluginDir. Overwrite? (y/N)"
+    $ans = Read-Host "Plugin file exists at $PluginFile. Overwrite? (y/N)"
     if ($ans -ne "y" -and $ans -ne "Y") {
       Write-Host "Aborted." -ForegroundColor Yellow
       exit 0
     }
   }
-  Remove-Item $PluginDir -Recurse -Force
-  Write-Host "Removed existing plugin directory." -ForegroundColor Yellow
+  Remove-Item $PluginFile -Force
+  Write-Host "Removed existing plugin file." -ForegroundColor Yellow
 }
 
 if (Test-Path $AudioDir) {
@@ -95,8 +95,8 @@ try {
     exit 1
   }
 
-  Write-Host "Installing plugin to $PluginDir ..." -ForegroundColor Cyan
-  New-Item -ItemType Directory -Path $PluginDir -Force | Out-Null
+  Write-Host "Installing plugin to $PluginFile ..." -ForegroundColor Cyan
+  New-Item -ItemType Directory -Path $PluginsDir -Force | Out-Null
   Copy-Item $PluginSource $PluginFile -Force
   Write-Host "Plugin installed: $PluginFile" -ForegroundColor Green
 
