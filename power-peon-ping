@@ -1,4 +1,5 @@
 import { spawn } from "child_process";
+import { join } from "path";
 
 function play(sound: string) {
   spawn("powershell.exe", [
@@ -8,31 +9,28 @@ function play(sound: string) {
   ]);
 }
 
-function ready() {
-  play(
-    "C:\\Users\\Asus\\Documents\\MyProject\\power-peon-ping\\audio\\peon\\sounds\\PeonReady1.wav",
-  );
+function makeAudioPath(baseDir: string, relativePath: string) {
+  return join(baseDir, "audio", relativePath);
 }
 
-function jobsDone() {
-  play(
-    "C:\\Users\\Asus\\Documents\\MyProject\\power-peon-ping\\audio\\peon\\sounds\\PeonJobsDone.wav",
-  );
+function ready(baseDir: string) {
+  play(makeAudioPath(baseDir, join("peon", "sounds", "PeonReady1.wav")));
 }
 
-function workWork() {
-  play(
-    "C:\\Users\\Asus\\Documents\\MyProject\\power-peon-ping\\audio\\peon\\sounds\\PeonYes3.wav",
-  );
+function jobsDone(baseDir: string) {
+  play(makeAudioPath(baseDir, join("peon", "sounds", "PeonJobsDone.wav")));
 }
 
-function what() {
-  play(
-    "C:\\Users\\Asus\\Documents\\MyProject\\power-peon-ping\\audio\\peon\\sounds\\PeonWhat3.wav",
-  );
+function workWork(baseDir: string) {
+  play(makeAudioPath(baseDir, join("peon", "sounds", "PeonYes3.wav")));
 }
 
-export const PingPlugin = async () => {
+function what(baseDir: string) {
+  play(makeAudioPath(baseDir, join("peon", "sounds", "PeonWhat3.wav")));
+}
+
+export const PingPlugin = async ({ directory }) => {
+  const baseDir = directory ?? process.cwd();
   return {
     event: async ({ event }: { event: any }) => {
       if (event.type === "message.updated") {
@@ -40,42 +38,42 @@ export const PingPlugin = async () => {
 
         // User prompt
         if (info?.role === "user" && !info?.summary) {
-          ready();
+          ready(baseDir);
         }
 
         // // AI finished response
         // if (info?.role === "assistant" && info?.finish === "stop") {
-        //   jobsDone();
+        //   jobsDone(baseDir);
         // }
 
         // Error case
         if (info?.role === "assistant" && info?.finish === "error") {
-          what();
+          what(baseDir);
         }
       }
       if (event.type === "permission.asked") {
-        what();
+        what(baseDir);
       }
       if (event.type === "server.connected") {
-        ready();
+        ready(baseDir);
       }
       if (event.type === "permission.granted") {
-        workWork();
+        workWork(baseDir);
       }
 
       if (event.type === "session.error") {
-        what();
+        what(baseDir);
       }
 
       if (event.type === "session.idle") {
-        jobsDone();
+        jobsDone(baseDir);
       }
       // AI performing steps / tools
       // if (event.type === "message.part.updated") {
       //   const part = event.properties?.part;
 
       //   if (part?.type === "step-start") {
-      //     workWork();
+      //     workWork(baseDir);
       //   }
       // }
     },
