@@ -1,0 +1,83 @@
+import { spawn } from "child_process";
+
+function play(sound: string) {
+  spawn("powershell.exe", [
+    "-NoProfile",
+    "-Command",
+    `(New-Object Media.SoundPlayer '${sound}').PlaySync()`,
+  ]);
+}
+
+function ready() {
+  play(
+    "C:\\Users\\Asus\\Documents\\MyProject\\power-peon-ping\\audio\\peon\\sounds\\PeonReady1.wav",
+  );
+}
+
+function jobsDone() {
+  play(
+    "C:\\Users\\Asus\\Documents\\MyProject\\power-peon-ping\\audio\\peon\\sounds\\PeonJobsDone.wav",
+  );
+}
+
+function workWork() {
+  play(
+    "C:\\Users\\Asus\\Documents\\MyProject\\power-peon-ping\\audio\\peon\\sounds\\PeonYes3.wav",
+  );
+}
+
+function what() {
+  play(
+    "C:\\Users\\Asus\\Documents\\MyProject\\power-peon-ping\\audio\\peon\\sounds\\PeonWhat3.wav",
+  );
+}
+
+export const PingPlugin = async () => {
+  return {
+    event: async ({ event }: { event: any }) => {
+      if (event.type === "message.updated") {
+        const info = event.properties?.info;
+
+        // User prompt
+        if (info?.role === "user" && !info?.summary) {
+          ready();
+        }
+
+        // // AI finished response
+        // if (info?.role === "assistant" && info?.finish === "stop") {
+        //   jobsDone();
+        // }
+
+        // Error case
+        if (info?.role === "assistant" && info?.finish === "error") {
+          what();
+        }
+      }
+      if (event.type === "permission.asked") {
+        what();
+      }
+      if (event.type === "server.connected") {
+        ready();
+      }
+      if (event.type === "permission.granted") {
+        workWork();
+      }
+
+      if (event.type === "session.error") {
+        what();
+      }
+
+      if (event.type === "session.idle") {
+        jobsDone();
+      }
+      // AI performing steps / tools
+      // if (event.type === "message.part.updated") {
+      //   const part = event.properties?.part;
+
+      //   if (part?.type === "step-start") {
+      //     workWork();
+      //   }
+      // }
+    },
+  };
+};
