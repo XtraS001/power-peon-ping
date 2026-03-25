@@ -52,7 +52,28 @@ The installer creates these directories automatically.
 
 ## Uninstall
 
-Delete the plugin folder and audio folder:
+### One-line (PowerShell)
+
+Open **PowerShell** and run:
+
+```powershell
+iwr -useb "https://raw.githubusercontent.com/XtraS001/power-peon-ping/main/uninstall.ps1" | iex
+```
+
+> `iwr` is a PowerShell alias for `Invoke-WebRequest`. It does **not** work in `cmd`.
+
+### Local file
+
+1. Download `uninstall.ps1` from this repo.
+2. Right-click on it and select **Run with PowerShell**, or open PowerShell and run:
+
+```powershell
+.\uninstall.ps1
+```
+
+### Manual method
+
+If you prefer to manually remove files, delete the plugin folder and audio folder:
 
 ```powershell
 Remove-Item -Recurse -Force "$env:USERPROFILE\.config\opencode\plugins\power-peon-ping"
